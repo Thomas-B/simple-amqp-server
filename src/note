@@ -1,0 +1,3 @@
+
+--> sendProtocolHeader `"AMQP" + String.fromCharCode(0, 0, 9, 1);`
+<-- ConnectionStart
