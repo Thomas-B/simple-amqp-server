@@ -18,6 +18,6 @@ Sending a good header for the startOk method
 - [ ] Receive message
 
 ## Resources
-[https://github.com/dayorbyte/dispatchd](ampq server implementation in go)
+[ampq server implementation in go](https://github.com/dayorbyte/dispatchd)
 
-[https://github.com/ppatil9096/books/blob/master/RabbitMQ%20in%20Depth.pdf](Book about rabbitmq's protocol)
+[Book about rabbitmq's protocol](https://github.com/ppatil9096/books/blob/master/RabbitMQ%20in%20Depth.pdf)
