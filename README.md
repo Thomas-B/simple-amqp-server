@@ -12,10 +12,10 @@ My current use only needs this server to be able to call back a function when a 
 Sending a good header for the startOk method
 
 ## TODO
-[ ] Finish connection  
-[ ] Create channel  
-[ ] Create/simulate Exchange  
-[ ] Receive message
+- [ ] Finish connection  
+- [ ] Create channel  
+- [ ] Create/simulate Exchange  
+- [ ] Receive message
 
 ## Resources
 [https://github.com/dayorbyte/dispatchd](ampq server implementation in go)
