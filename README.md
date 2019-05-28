@@ -4,12 +4,17 @@
 
 The goals of the library is to provide a simple way to spawn up an amqp server for automated tests.  
 
-My current use only needs this server to be able to call back a function when a message is received by the amqp server.
+My current use case only needs this server to be able to call back a function when a message is received by the amqp server.
 
 
 ## Current State
 
-Sending a good header for the startOk method
+~~Sending a good header for the `connection.start` method~~  
+We are now able to send back the `connection.start` frame.
+Next steps:
+- parse the `connection.startOk` frame
+- send the `connection.tune` frame
+- parse the `connection.tuneOk` frame
 
 ## TODO
 - [ ] Finish connection  
