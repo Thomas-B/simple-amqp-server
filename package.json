@@ -12,10 +12,11 @@
   "devDependencies": {
     "@types/node": "^12.0.2",
     "nodemon": "^1.19.1",
-    "ts-node": "^8.1.1",
+    "ts-node": "^8.2.0",
     "typescript": "^3.4.5"
   },
   "dependencies": {
-    "buffer-more-ints": "^1.0.0"
+    "buffer-more-ints": "^1.0.0",
+    "smart-buffer": "^4.0.2"
   }
 }

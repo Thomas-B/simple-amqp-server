@@ -1,50 +1,22 @@
 import { createServer } from "net";
 import * as ints from "buffer-more-ints";
+import { ConnectionStart } from "./frames/connection-start";
 
 function main() {
   const server = createServer(socket => {
     socket.on("data", (data: Buffer) => {
-      // console.log(data, data.toString());
-      // class id(2 o), method id(2 o), maj(1 o), min(1 o)
-      const classIdMajMin = new Buffer([0, 10, 0, 10, 0, 9]);
-      const serverPropertiesTemp = Buffer.alloc(1000);
-      const serverPropertiesLength = encodeTable(
-        serverPropertiesTemp,
+      console.log(data, data.toString());
+
+      const c = new ConnectionStart(
+        0,
+        9,
         {
           toto: "test"
         },
-        0
+        "PLAIN",
+        "en_US"
       );
-
-      const serverProperties = serverPropertiesTemp.slice(
-        0,
-        serverPropertiesLength
-      );
-
-      const mechanismLengthBuf = Buffer.alloc(4);
-      mechanismLengthBuf.writeInt32BE(Buffer.from("en_US").length, 0);
-      const mechanism = Buffer.concat([
-        mechanismLengthBuf,
-        Buffer.from("PLAIN")
-      ]);
-      const localesLengthBuf = Buffer.alloc(4);
-      localesLengthBuf.writeInt32BE(Buffer.from("en_US").length, 0);
-      const locales = Buffer.concat([localesLengthBuf, Buffer.from("en_US")]);
-      const payload = Buffer.concat([
-        classIdMajMin,
-        serverProperties,
-        mechanism,
-        locales
-      ]);
-      const size = payload.length;
-
-      const message = Buffer.concat([
-        new Buffer([1, 0, 0, 0, 0, 0, size]),
-        payload,
-        Buffer.from([206])
-      ]);
-      socket.write(message);
-      socket.destroy();
+      socket.write(c.toBuffer());
     });
   });
 
