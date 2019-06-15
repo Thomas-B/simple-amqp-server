@@ -2,26 +2,26 @@ import { SmartBuffer } from "smart-buffer";
 import * as ints from "buffer-more-ints";
 const MAX_SHORT_STR_LENGTH = 255;
 
-class AmqpBuffer {
+class AmqpFrameWriter {
   private internalSmartBuffer: SmartBuffer;
 
   constructor() {
     this.internalSmartBuffer = new SmartBuffer();
   }
 
-  writeByte(value: number): void {
+  public writeByte(value: number): void {
     this.internalSmartBuffer.writeInt8(value);
   }
 
-  writeShort(value: number): void {
+  public writeShort(value: number): void {
     this.internalSmartBuffer.writeInt16BE(value);
   }
 
-  writeLong(value: number): void {
+  public writeLong(value: number): void {
     this.internalSmartBuffer.writeUInt32BE(value);
   }
 
-  writeLongStr(value: string | Buffer): void {
+  public writeLongStr(value: string | Buffer): void {
     const buffer = this.stringOrBufferToBuffer(value);
 
     this.writeLong(value.length);
@@ -32,7 +32,7 @@ class AmqpBuffer {
     return this.internalSmartBuffer.toBuffer();
   }
 
-  writeShortStr(value: string | Buffer): void {
+  public writeShortStr(value: string | Buffer): void {
     const buffer = this.stringOrBufferToBuffer(value);
     if (buffer.length > MAX_SHORT_STR_LENGTH) {
       throw new Error("short str too long");
@@ -42,8 +42,8 @@ class AmqpBuffer {
     this.internalSmartBuffer.writeBuffer(buffer);
   }
 
-  writeTable(value: object): void {
-    const tableBuffer = new AmqpBuffer();
+  public writeTable(value: object): void {
+    const tableBuffer = new AmqpFrameWriter();
 
     Object.entries(value).forEach(([key, value]) => {
       tableBuffer.writeShortStr(key);
@@ -96,7 +96,7 @@ class AmqpBuffer {
   }
 
   private writeArray(arr: any[]): void {
-    const tableBuffer = new AmqpBuffer();
+    const tableBuffer = new AmqpFrameWriter();
     arr.forEach(value => {
       tableBuffer.writeValue(value);
     });
@@ -144,4 +144,4 @@ class AmqpBuffer {
   }
 }
 
-export { AmqpBuffer };
+export { AmqpFrameWriter };

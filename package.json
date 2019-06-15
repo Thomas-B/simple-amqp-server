@@ -16,6 +16,7 @@
     "typescript": "^3.4.5"
   },
   "dependencies": {
+    "bigint-buffer": "^1.1.2",
     "buffer-more-ints": "^1.0.0",
     "smart-buffer": "^4.0.2"
   }

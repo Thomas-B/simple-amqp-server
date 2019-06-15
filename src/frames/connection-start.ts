@@ -1,4 +1,4 @@
-import { AmqpBuffer } from "./amqp-frame";
+import { AmqpFrameWriter } from "./amqp-frame-writer";
 
 class ConnectionStart {
   private frameType: number = 1;
@@ -15,7 +15,7 @@ class ConnectionStart {
   ) {}
 
   private getHeader(size: number): Buffer {
-    const header = new AmqpBuffer();
+    const header = new AmqpFrameWriter();
 
     header.writeByte(this.frameType);
     header.writeShort(this.channelId);
@@ -25,13 +25,12 @@ class ConnectionStart {
   }
 
   private getPayload(): Buffer {
-    const payload = new AmqpBuffer();
+    const payload = new AmqpFrameWriter();
 
     payload.writeShort(this.classId);
     payload.writeShort(this.methodId);
     payload.writeByte(this.major);
     payload.writeByte(this.minor);
-    // write table this.serverProperty
     payload.writeTable(this.serverProperty);
     payload.writeLongStr(this.mechanism);
     payload.writeLongStr(this.locales);
