@@ -2,6 +2,7 @@ import { Channel } from "./channel";
 import { Socket } from "net";
 import { ConnectionStart } from "./frames/connection-start";
 import { WireFrame } from "./frames/wire-frame";
+import { FrameType } from "./constants";
 
 class Connection {
   private channels: (Channel | undefined)[];
@@ -50,14 +51,14 @@ class Connection {
     const wireFrame = new WireFrame(data);
 
     // heartbeat we might have to do something with it
-    if (wireFrame.frameType === 8) {
+    if (wireFrame.frameType === FrameType.HeartBeat) {
       return;
     }
 
     let channel = this.channels[wireFrame.channel];
 
     if (!channel) {
-      channel = new Channel(this.getNewChannelId());
+      channel = new Channel(this.getNewChannelId(), this);
       this.channels.push(channel);
     }
 
@@ -68,8 +69,12 @@ class Connection {
     console.log("connection closed");
   }
 
+  public send(data: Buffer) {
+    this.socket.write(data);
+  }
+
   public start() {
-    const connectionChannel = new Channel(this.getNewChannelId());
+    const connectionChannel = new Channel(this.getNewChannelId(), this);
 
     this.channels.push(connectionChannel);
     this.socket.on("data", this.handleConnection.bind(this));

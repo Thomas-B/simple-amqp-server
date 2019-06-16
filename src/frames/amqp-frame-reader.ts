@@ -12,6 +12,14 @@ class AmqpFrameReader {
     const length = this.readLong();
     return this.internalSmartBuffer.readBuffer(length);
   }
+
+  public static readMethodIdentifiers(data: Buffer): [number, number] {
+    const classId = data.readInt16BE(0);
+    const methodId = data.readInt16BE(2);
+
+    return [classId, methodId];
+  }
+
   public readByte(): number {
     return this.internalSmartBuffer.readInt8();
   }
@@ -64,7 +72,7 @@ class AmqpFrameReader {
   }
 
   private readValue(): any {
-    const valueType = this.readByte().toString();
+    const valueType = String.fromCharCode(this.readByte());
 
     switch (valueType) {
       case "t":

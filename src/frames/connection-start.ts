@@ -1,10 +1,11 @@
 import { AmqpFrameWriter } from "./amqp-frame-writer";
+import { ClassId, ConnectionMethodId } from "../constants";
 
 class ConnectionStart {
   private frameType: number = 1;
   private channelId: number = 0;
-  private classId: number = 10;
-  private methodId: number = 10;
+  private classId: number = ClassId.Connnection;
+  private methodId: number = ConnectionMethodId.Start;
 
   constructor(
     private major: number,
