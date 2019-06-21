@@ -26,6 +26,8 @@ class ConnectionMethods {
     console.log("tuneOkFrame", tuneOkFrame);
     // TODO: we are expected to send based the received frame duration
     // TODO: we should monitor client's heartbeat to remove dead ones
+    console.log("start sending heartbeat");
+    connection.startSendHeartBeat(tuneOkFrame.heartBeatDelay);
   }
 
   public static open(payload: Buffer, connection: Connection): void {

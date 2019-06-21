@@ -3,11 +3,14 @@ import { Socket } from "net";
 import { ConnectionStart } from "./frames/connection-start";
 import { WireFrame } from "./frames/wire-frame";
 import { FrameType } from "./constants";
+import { HeartBeat } from "./frames/heart-beat";
 
 class Connection {
   private channels: (Channel | undefined)[];
   private currentChannelId: number;
+
   constructor(private socket: Socket) {
+    console.log("new connection");
     this.channels = [];
     this.currentChannelId = 0;
   }
@@ -47,7 +50,7 @@ class Connection {
     this.socket.write(connectionStartFrame);
   }
 
-  private handleData(data: Buffer) {
+  private handleData(data: Buffer): void {
     const wireFrame = new WireFrame(data);
 
     // heartbeat we might have to do something with it
@@ -65,22 +68,38 @@ class Connection {
     channel.handleWireFrame(wireFrame);
   }
 
-  private handleClose(data: Buffer) {
+  private handleClose(data: Buffer): void {
     console.log("connection closed");
   }
 
-  public send(data: Buffer) {
+  private handleError(err: Error): void {
+    console.log(`Got a Connection error ${err.message}`);
+  }
+  public send(data: Buffer): void {
     this.socket.write(data);
   }
 
-  public start() {
+  public start(): void {
     const connectionChannel = new Channel(this.getNewChannelId(), this);
 
     this.channels.push(connectionChannel);
     this.socket.on("data", this.handleConnection.bind(this));
     this.socket.on("close", this.handleClose.bind(this));
-    this.socket.on("error", this.handleClose.bind(this));
+    this.socket.on("error", this.handleError.bind(this));
     this.socket.on("timeout", this.handleClose.bind(this));
+  }
+
+  private sendHeartBeat(heartBeatDelay: number, payload: Buffer): void {
+    setTimeout(() => {
+      this.socket.write(payload);
+      this.sendHeartBeat(heartBeatDelay, payload);
+    }, (heartBeatDelay / 2) * 1000);
+  }
+
+  public startSendHeartBeat(heartBeatDelay: number): void {
+    // It should always be zero because heartbeat are only sent on the connection channel
+    const hb = new HeartBeat(0).toBuffer();
+    this.sendHeartBeat(heartBeatDelay, hb);
   }
 }
 
