@@ -6,20 +6,10 @@ The goals of the library is to provide a simple way to spawn up an amqp server f
 
 My current use case only needs this server to be able to call back a function when a message is received by the amqp server.
 
-
-## Current State
-
-~~Sending a good header for the `connection.start` method~~  
-We are now able to send back the `connection.start` frame.
-Next steps:
-- parse the `connection.startOk` frame
-- send the `connection.tune` frame
-- parse the `connection.tuneOk` frame
-
 ## TODO
-- [ ] Finish connection  
-- [ ] Create channel  
-- [ ] Create/simulate Exchange  
+- [x] Finish connection  
+- [x] Create channel  
+- [ ] Assert Exchange  
 - [ ] Receive message
 
 ## Resources

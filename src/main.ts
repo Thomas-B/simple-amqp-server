@@ -1,17 +1,8 @@
-import { createServer } from "net";
-import { Connection } from "./connection";
+import { Server } from "./server";
 
-function main() {
-  const connections: Connection[] = [];
-  const server = createServer(socket => {
-    const newConnection = new Connection(socket);
-    newConnection.start();
-    connections.push(newConnection);
-  });
-
-  server.listen(5672, "0.0.0.0", () => {
-    console.log("Server started.");
-  });
+async function main() {
+  const server = new Server();
+  await server.start();
 }
 
 main();

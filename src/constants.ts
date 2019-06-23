@@ -27,4 +27,16 @@ enum ConnectionMethodId {
   CloseOk = 51
 }
 
-export { FrameType, ClassId, ConnectionMethodId };
+enum ChannelMethodId {
+  Open = 10,
+  OpenOk = 11,
+  Flow = 20,
+  FlowOk = 21,
+  Close = 40,
+  CloseOk = 41
+}
+
+// End Of Buffer
+const EOB = Buffer.from([206]);
+
+export { FrameType, ClassId, ConnectionMethodId, EOB, ChannelMethodId };

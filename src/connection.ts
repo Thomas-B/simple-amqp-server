@@ -1,15 +1,18 @@
 import { Channel } from "./channel";
 import { Socket } from "net";
-import { ConnectionStart } from "./frames/connection-start";
+import { ConnectionStart } from "./frames/connection/connection-start";
 import { WireFrame } from "./frames/wire-frame";
 import { FrameType } from "./constants";
 import { HeartBeat } from "./frames/heart-beat";
+import { EventEmitter } from "events";
 
-class Connection {
+class Connection extends EventEmitter {
   private channels: (Channel | undefined)[];
   private currentChannelId: number;
+  private heartBeatTimeout?: NodeJS.Timeout;
 
   constructor(private socket: Socket) {
+    super();
     console.log("new connection");
     this.channels = [];
     this.currentChannelId = 0;
@@ -53,7 +56,7 @@ class Connection {
   private handleData(data: Buffer): void {
     const wireFrame = new WireFrame(data);
 
-    // heartbeat we might have to do something with it
+    // heartbeat frame we might have to do something with it
     if (wireFrame.frameType === FrameType.HeartBeat) {
       return;
     }
@@ -61,6 +64,7 @@ class Connection {
     let channel = this.channels[wireFrame.channel];
 
     if (!channel) {
+      console.log("new Channel");
       channel = new Channel(this.getNewChannelId(), this);
       this.channels.push(channel);
     }
@@ -69,6 +73,11 @@ class Connection {
   }
 
   private handleClose(data: Buffer): void {
+    if (this.heartBeatTimeout) {
+      clearTimeout(this.heartBeatTimeout);
+    }
+
+    this.emit("close", this.socket);
     console.log("connection closed");
   }
 
@@ -90,7 +99,8 @@ class Connection {
   }
 
   private sendHeartBeat(heartBeatDelay: number, payload: Buffer): void {
-    setTimeout(() => {
+    this.heartBeatTimeout = setTimeout(() => {
+      console.log("HB");
       this.socket.write(payload);
       this.sendHeartBeat(heartBeatDelay, payload);
     }, (heartBeatDelay / 2) * 1000);

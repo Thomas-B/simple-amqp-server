@@ -1,14 +1,12 @@
 import { WireFrame } from "./frames/wire-frame";
-import { FrameType, ClassId, ConnectionMethodId } from "./constants";
+import { FrameType, ClassId, ConnectionMethodId, ChannelMethodId } from "./constants";
 import { Connection } from "./connection";
 import { AmqpFrameReader } from "./frames/amqp-frame-reader";
 import { ConnectionMethods } from "./connection-methods";
+import { ChannelMethods } from "./channel-methods";
 
 class Channel {
-  constructor(
-    private readonly id: number,
-    private readonly connection: Connection
-  ) {}
+  constructor(private readonly id: number, private readonly connection: Connection) {}
 
   public handleWireFrame(wireFrame: WireFrame): void {
     switch (wireFrame.frameType) {
@@ -22,12 +20,13 @@ class Channel {
 
   private handleMethod(payload: Buffer): void {
     const [classId, methodId] = AmqpFrameReader.readMethodIdentifiers(payload);
-    console.log(classId, methodId);
+    console.log("handleMethod", classId, methodId, this.id);
     switch (classId) {
       case ClassId.Connnection:
         this.handleConnection(methodId, payload);
         break;
       case ClassId.Channel:
+        this.handleChannel(methodId, payload);
         break;
       case ClassId.Exchange:
         break;
@@ -42,26 +41,48 @@ class Channel {
     }
   }
 
+  private handleChannel(methodId: number, payload: Buffer): void {
+    switch (methodId) {
+      case ChannelMethodId.Open:
+        ChannelMethods.Open(payload, this.connection, this.id);
+        break;
+      case ChannelMethodId.Flow:
+        ChannelMethods.Flow(payload, this.connection, this.id);
+        break;
+      case ChannelMethodId.FlowOk:
+        ChannelMethods.FlowOk(payload, this.connection, this.id);
+        break;
+      case ChannelMethodId.Close:
+        ChannelMethods.Close(payload, this.connection, this.id);
+        break;
+      case ChannelMethodId.CloseOk:
+        ChannelMethods.CloseOk(payload, this.connection, this.id);
+        break;
+      default:
+        throw new Error(`Can't handle Channel method id = ${methodId}`);
+    }
+  }
+
   private handleConnection(methodId: number, payload: Buffer): void {
     switch (methodId) {
       case ConnectionMethodId.StartOk:
-        ConnectionMethods.startOk(payload, this.connection);
+        ConnectionMethods.startOk(payload, this.connection, this.id);
         break;
 
       case ConnectionMethodId.SecureOk:
-        ConnectionMethods.secureOk(payload, this.connection);
+        ConnectionMethods.secureOk(payload, this.connection, this.id);
         break;
       case ConnectionMethodId.TuneOk:
-        ConnectionMethods.tuneOk(payload, this.connection);
+        ConnectionMethods.tuneOk(payload, this.connection, this.id);
         break;
       case ConnectionMethodId.Open:
-        ConnectionMethods.open(payload, this.connection);
+        ConnectionMethods.open(payload, this.connection, this.id);
         break;
       case ConnectionMethodId.Close:
-        ConnectionMethods.close(payload, this.connection);
+        ConnectionMethods.close(payload, this.connection, this.id);
         break;
       case ConnectionMethodId.CloseOk:
-        ConnectionMethods.closeOk(payload, this.connection);
+        ConnectionMethods.closeOk(payload, this.connection, this.id);
         break;
       default:
         throw new Error(`Can't handle connection method id = ${methodId}`);

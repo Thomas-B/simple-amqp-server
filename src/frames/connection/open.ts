@@ -1,4 +1,4 @@
-import { AmqpFrameReader } from "./amqp-frame-reader";
+import { AmqpFrameReader } from "../amqp-frame-reader";
 
 class Open {
   public virtualHost: string;

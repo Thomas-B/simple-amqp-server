@@ -1,4 +1,5 @@
 import { AmqpFrameWriter } from "./amqp-frame-writer";
+import { EOB } from "../constants";
 
 class HeartBeat {
   private frameType: number = 8;
@@ -22,7 +23,8 @@ class HeartBeat {
   public toBuffer(): Buffer {
     const payload = this.getPayload();
     const header = this.getHeader(payload.length);
-    return Buffer.concat([header, payload, Buffer.from([206])]);
+
+    return Buffer.concat([header, payload, EOB]);
   }
 }
 
