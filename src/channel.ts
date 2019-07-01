@@ -1,12 +1,22 @@
 import { WireFrame } from "./frames/wire-frame";
-import { FrameType, ClassId, ConnectionMethodId, ChannelMethodId } from "./constants";
+import {
+  FrameType,
+  ClassId,
+  ConnectionMethodId,
+  ChannelMethodId,
+  ExchangeMethodId
+} from "./constants";
 import { Connection } from "./connection";
 import { AmqpFrameReader } from "./frames/amqp-frame-reader";
 import { ConnectionMethods } from "./connection-methods";
 import { ChannelMethods } from "./channel-methods";
+import { ExchangeMethods } from "./exchange-method";
 
 class Channel {
-  constructor(private readonly id: number, private readonly connection: Connection) {}
+  constructor(
+    private readonly id: number,
+    private readonly connection: Connection
+  ) {}
 
   public handleWireFrame(wireFrame: WireFrame): void {
     switch (wireFrame.frameType) {
@@ -29,7 +39,7 @@ class Channel {
         this.handleChannel(methodId, payload);
         break;
       case ClassId.Exchange:
-        break;
+        this.handleExchange(methodId, payload);
       case ClassId.Queue:
         break;
       case ClassId.Basic:
@@ -38,6 +48,25 @@ class Channel {
         break;
       default:
         throw new Error(`Can't handle the Class id = ${classId}`);
+    }
+  }
+
+  private handleExchange(methodId: number, payload: Buffer): void {
+    switch (methodId) {
+      case ExchangeMethodId.Declare:
+        ExchangeMethods.Declare(payload, this.connection, this.id);
+        break;
+      case ExchangeMethodId.Delete:
+        ExchangeMethods.Delete(payload, this.connection, this.id);
+        break;
+      case ExchangeMethodId.Bind:
+        ExchangeMethods.Bind(payload, this.connection, this.id);
+        break;
+      case ExchangeMethodId.UnBind:
+        ExchangeMethods.UnBind(payload, this.connection, this.id);
+        break;
+      default:
+        throw new Error(`Can't handle Channel method id = ${methodId}`);
     }
   }
 

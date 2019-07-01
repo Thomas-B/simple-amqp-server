@@ -1,5 +1,5 @@
 import { AmqpFrameWriter } from "../amqp-frame-writer";
-import { ClassId, ConnectionMethodId, EOB, FrameType } from "../../constants";
+import { ClassId, ConnectionMethodId, FrameType } from "../../constants";
 import { Frame } from "../frame";
 
 class OpenOk extends Frame {

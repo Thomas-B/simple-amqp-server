@@ -36,7 +36,30 @@ enum ChannelMethodId {
   CloseOk = 41
 }
 
+enum ExchangeMethodId {
+  Declare = 10,
+  DeclareOk = 11,
+  Delete = 20,
+  DeleteOk = 21,
+  // rmq specific method
+  Bind = 30,
+  // rmq specific method
+  BindOk = 31,
+  // rmq specific method
+  UnBind = 40,
+  // This looks like a type in dispatchd and
+  //I can't find any documentation to this rmq specific method
+  UnBindOk = 51
+}
+
 // End Of Buffer
 const EOB = Buffer.from([206]);
 
-export { FrameType, ClassId, ConnectionMethodId, EOB, ChannelMethodId };
+export {
+  FrameType,
+  ClassId,
+  ConnectionMethodId,
+  EOB,
+  ChannelMethodId,
+  ExchangeMethodId
+};
