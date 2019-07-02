@@ -52,6 +52,18 @@ enum ExchangeMethodId {
   UnBindOk = 51
 }
 
+enum QueueMethodId {
+  Declare = 10,
+  DeclareOk = 11,
+  Bind = 20,
+  BindOk = 21,
+  Purge = 30,
+  PurgeOk = 31,
+  Delete = 40,
+  DeleteOk = 41,
+  UnBind = 50,
+  UnBindOk = 51
+}
 // End Of Buffer
 const EOB = Buffer.from([206]);
 
@@ -61,5 +73,6 @@ export {
   ConnectionMethodId,
   EOB,
   ChannelMethodId,
-  ExchangeMethodId
+  ExchangeMethodId,
+  QueueMethodId
 };

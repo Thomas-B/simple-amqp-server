@@ -2,8 +2,7 @@ import { AmqpFrameReader } from "../amqp-frame-reader";
 
 class Declare {
   public readonly reserved1: number;
-  public readonly exchange: string;
-  public readonly type: string;
+  public readonly queue: string;
   public readonly passive: boolean;
   public readonly durable: boolean;
   public readonly exclusive: boolean;
@@ -19,8 +18,7 @@ class Declare {
     amqpReader.readShort();
 
     this.reserved1 = amqpReader.readShort();
-    this.exchange = amqpReader.readShortstr();
-    this.type = amqpReader.readShortstr();
+    this.queue = amqpReader.readShortstr();
     const bits = amqpReader.readByte();
     this.arguments = amqpReader.readTable();
 

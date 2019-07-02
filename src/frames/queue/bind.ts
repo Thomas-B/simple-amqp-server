@@ -1,13 +1,10 @@
 import { AmqpFrameReader } from "../amqp-frame-reader";
 
-class Declare {
+class Bind {
   public readonly reserved1: number;
+  public readonly queue: string;
   public readonly exchange: string;
-  public readonly type: string;
-  public readonly passive: boolean;
-  public readonly durable: boolean;
-  public readonly exclusive: boolean;
-  public readonly autoDelete: boolean;
+  public readonly routingKey: string;
   public readonly noWait: boolean;
   public readonly arguments: object;
 
@@ -19,17 +16,14 @@ class Declare {
     amqpReader.readShort();
 
     this.reserved1 = amqpReader.readShort();
+    this.queue = amqpReader.readShortstr();
     this.exchange = amqpReader.readShortstr();
-    this.type = amqpReader.readShortstr();
+    this.routingKey = amqpReader.readShortstr();
     const bits = amqpReader.readByte();
     this.arguments = amqpReader.readTable();
 
-    this.passive = ((bits >> 0) & 1) === 1;
-    this.durable = ((bits >> 1) & 1) === 1;
-    this.exclusive = ((bits >> 2) & 1) === 1;
-    this.autoDelete = ((bits >> 3) & 1) === 1;
-    this.noWait = ((bits >> 4) & 1) === 1;
+    this.noWait = (bits & 1) === 1;
   }
 }
 
-export { Declare };
+export { Bind };
