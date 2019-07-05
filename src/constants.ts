@@ -64,6 +64,28 @@ enum QueueMethodId {
   UnBind = 50,
   UnBindOk = 51
 }
+
+enum BasicMethodId {
+  QOS = 10,
+  QOSOk = 11,
+  Consume = 20,
+  ConsumeOk = 21,
+  Cancel = 30,
+  CancelOk = 31,
+  Publish = 40,
+  Return = 50,
+  Deliver = 60,
+  Get = 70,
+  GetOk = 71,
+  GetEmpty = 72,
+  Ack = 80,
+  Reject = 90,
+  RecoverAsync = 100,
+  Recover = 110,
+  RecoverOk = 111,
+  Nack = 120
+}
+
 // End Of Buffer
 const EOB = Buffer.from([206]);
 
@@ -74,5 +96,6 @@ export {
   EOB,
   ChannelMethodId,
   ExchangeMethodId,
-  QueueMethodId
+  QueueMethodId,
+  BasicMethodId
 };

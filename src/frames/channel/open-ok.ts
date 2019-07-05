@@ -10,8 +10,6 @@ class OpenOk extends Frame {
   getPayload(): Buffer {
     const payload = new AmqpFrameWriter();
 
-    payload.writeShort(this.classId);
-    payload.writeShort(this.methodId);
     payload.writeLongStr(this.reserved1);
 
     return payload.toBuffer();

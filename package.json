@@ -4,13 +4,15 @@
   "description": "simple amqp server for testing purpose",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec ts-node -- ./src/main.ts",
+    "start": "cross-env DEBUG=sas:* nodemon --exec ts-node -- ./src/main.ts",
     "test": "npm test"
   },
   "author": "Thomas-B",
   "license": "MIT",
   "devDependencies": {
+    "@types/debug": "^4.1.4",
     "@types/node": "^12.0.2",
+    "cross-env": "^5.2.0",
     "nodemon": "^1.19.1",
     "ts-node": "^8.2.0",
     "typescript": "^3.4.5"
@@ -18,6 +20,7 @@
   "dependencies": {
     "bigint-buffer": "^1.1.2",
     "buffer-more-ints": "^1.0.0",
+    "debug": "^4.1.1",
     "smart-buffer": "^4.0.2"
   }
 }

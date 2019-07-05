@@ -5,6 +5,9 @@ import { WireFrame } from "./frames/wire-frame";
 import { FrameType } from "./constants";
 import { HeartBeat } from "./frames/heart-beat";
 import { EventEmitter } from "events";
+import { debug as d } from "debug";
+
+const debug = d("sas:connection");
 
 class Connection extends EventEmitter {
   private channels: (Channel | undefined)[];
@@ -13,7 +16,7 @@ class Connection extends EventEmitter {
 
   constructor(private socket: Socket) {
     super();
-    console.log("new connection");
+    debug("new connection");
     this.channels = [];
     this.currentChannelId = 0;
   }
@@ -54,22 +57,28 @@ class Connection extends EventEmitter {
   }
 
   private handleData(data: Buffer): void {
-    const wireFrame = new WireFrame(data);
+    let dataOffset = 0;
+    // one packet can contain multiple frames
+    while (dataOffset != data.length) {
+      const frame = data.slice(dataOffset);
+      const wireFrame = new WireFrame(frame);
+      dataOffset += wireFrame.length;
 
-    // heartbeat frame we might have to do something with it
-    if (wireFrame.frameType === FrameType.HeartBeat) {
-      return;
+      // heartbeat frame we might have to do something with it
+      if (wireFrame.frameType === FrameType.HeartBeat) {
+        return;
+      }
+
+      let channel = this.channels[wireFrame.channel];
+
+      if (!channel) {
+        debug("new Channel");
+        channel = new Channel(this.getNewChannelId(), this);
+        this.channels.push(channel);
+      }
+      // debug("length wireframe vs data", wireFrame.payload.length + 1 + 3, data.length);
+      channel.handleWireFrame(wireFrame);
     }
-
-    let channel = this.channels[wireFrame.channel];
-
-    if (!channel) {
-      console.log("new Channel");
-      channel = new Channel(this.getNewChannelId(), this);
-      this.channels.push(channel);
-    }
-
-    channel.handleWireFrame(wireFrame);
   }
 
   private handleClose(data: Buffer): void {
@@ -78,11 +87,11 @@ class Connection extends EventEmitter {
     }
 
     this.emit("close", this.socket);
-    console.log("connection closed");
+    debug("connection closed");
   }
 
   private handleError(err: Error): void {
-    console.log(`Got a Connection error ${err.message}`);
+    debug(`Got a Connection error ${err.message}`);
   }
   public send(data: Buffer): void {
     this.socket.write(data);
@@ -100,7 +109,6 @@ class Connection extends EventEmitter {
 
   private sendHeartBeat(heartBeatDelay: number, payload: Buffer): void {
     this.heartBeatTimeout = setTimeout(() => {
-      console.log("HB");
       this.socket.write(payload);
       this.sendHeartBeat(heartBeatDelay, payload);
     }, (heartBeatDelay / 2) * 1000);

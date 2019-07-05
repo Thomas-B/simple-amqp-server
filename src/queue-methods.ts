@@ -9,6 +9,9 @@ import { UnBind } from "./frames/queue/unbind";
 import { UnBindOk } from "./frames/queue/unbind-ok";
 import { Purge } from "./frames/queue/purge";
 import { PurgeOk } from "./frames/queue/purge-ok";
+import { debug as d } from "debug";
+
+const debug = d("sas:queue-method");
 
 class QueueMethods {
   public static Declare(
@@ -19,8 +22,8 @@ class QueueMethods {
     const declareFrame = new Declare(payload);
     const declareOkFrame = new DeclareOk(channelId);
 
-    console.log("declareFrame", declareFrame);
-    console.log("declareOkFrame", declareOkFrame, declareOkFrame.toBuffer());
+    debug("declareFrame", declareFrame);
+    debug("declareOkFrame", declareOkFrame, declareOkFrame.toBuffer());
     connection.send(declareOkFrame.toBuffer());
   }
   public static Delete(
@@ -31,8 +34,8 @@ class QueueMethods {
     const deleteFrame = new Delete(payload);
     const deleteOkFrame = new DeleteOk(channelId);
 
-    console.log("deleteFrame", deleteFrame);
-    console.log("deleteOkFrame", deleteOkFrame, deleteOkFrame.toBuffer());
+    debug("deleteFrame", deleteFrame);
+    debug("deleteOkFrame", deleteOkFrame, deleteOkFrame.toBuffer());
     connection.send(deleteOkFrame.toBuffer());
   }
   public static Bind(
@@ -43,8 +46,8 @@ class QueueMethods {
     const bindFrame = new Bind(payload);
     const bindOkFrame = new BindOk(channelId);
 
-    console.log("bindFrame", bindFrame);
-    console.log("bindOkFrame", bindOkFrame, bindOkFrame.toBuffer());
+    debug("bindFrame", bindFrame);
+    debug("bindOkFrame", bindOkFrame, bindOkFrame.toBuffer());
     connection.send(bindOkFrame.toBuffer());
   }
 
@@ -56,8 +59,8 @@ class QueueMethods {
     const unBindFrame = new UnBind(payload);
     const unBindOkFrame = new UnBindOk(channelId);
 
-    console.log("unBindFrame", unBindFrame);
-    console.log("unBindOkFrame", unBindOkFrame, unBindOkFrame.toBuffer());
+    debug("unBindFrame", unBindFrame);
+    debug("unBindOkFrame", unBindOkFrame, unBindOkFrame.toBuffer());
     connection.send(unBindOkFrame.toBuffer());
   }
 
@@ -69,8 +72,8 @@ class QueueMethods {
     const purgeFrame = new Purge(payload);
     const purgeOkFrame = new PurgeOk(channelId);
 
-    console.log("purgeFrame", purgeFrame);
-    console.log("purgeOkFrame", purgeOkFrame, purgeOkFrame.toBuffer());
+    debug("purgeFrame", purgeFrame);
+    debug("purgeOkFrame", purgeOkFrame, purgeOkFrame.toBuffer());
     connection.send(purgeOkFrame.toBuffer());
   }
 }

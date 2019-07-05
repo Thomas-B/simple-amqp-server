@@ -7,10 +7,12 @@ The goals of the library is to provide a simple way to spawn up an amqp server f
 My current use case only needs this server to be able to call back a function when a message is received by the amqp server.
 
 ## TODO
-- [x] Finish connection  
-- [x] Create channel  
-- [ ] Assert Exchange  
-- [ ] Receive message
+- [ ] Making it a module
+- [ ] Change the server API to receive an onPublishedMessage callback
+- [ ] Open source it
+- [ ] Create npm package
+- [ ] Write tests
+
 
 ## Resources
 [ampq server implementation in go](https://github.com/dayorbyte/dispatchd)

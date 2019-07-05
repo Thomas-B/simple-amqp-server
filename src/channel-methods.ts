@@ -1,6 +1,9 @@
 import { Connection } from "./connection";
 import { Open } from "./frames/channel/open";
 import { OpenOk } from "./frames/channel/open-ok";
+import { debug as d } from "debug";
+
+const debug = d("sas:channel-method");
 
 abstract class ChannelMethods {
   public static Open(
@@ -14,8 +17,8 @@ abstract class ChannelMethods {
 
     // TODO maybe check if the new channel tops the maximum channel count
     // in this case may be we should send a Close frame
-    console.log(openFrame);
-    console.log(openOkFrame, openOkFrame.toBuffer());
+    debug(openFrame);
+    debug(openOkFrame, openOkFrame.toBuffer());
     connection.send(openOkFrame.toBuffer());
   }
 

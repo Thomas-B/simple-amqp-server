@@ -8,6 +8,10 @@ class AmqpFrameReader {
     this.internalSmartBuffer = SmartBuffer.fromBuffer(data);
   }
 
+  public getReadOffset(): number {
+    return this.internalSmartBuffer.readOffset;
+  }
+
   public readRest(): Buffer {
     const length = this.readLong();
     return this.internalSmartBuffer.readBuffer(length);
@@ -32,13 +36,10 @@ class AmqpFrameReader {
     return this.internalSmartBuffer.readInt32BE();
   }
 
-  public readLongLong(): BigInt {
+  public readLongLong(): bigint {
     const currentOffset = this.internalSmartBuffer.readOffset;
     const newOffset = currentOffset + 8;
-    const bigIntBuffer = this.internalSmartBuffer.internalBuffer.slice(
-      currentOffset,
-      newOffset
-    );
+    const bigIntBuffer = this.internalSmartBuffer.internalBuffer.slice(currentOffset, newOffset);
 
     this.internalSmartBuffer.readOffset = newOffset;
 

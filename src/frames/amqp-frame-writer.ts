@@ -1,5 +1,6 @@
 import { SmartBuffer } from "smart-buffer";
 import * as ints from "buffer-more-ints";
+import { toBufferBE } from "bigint-buffer";
 const MAX_SHORT_STR_LENGTH = 255;
 
 class AmqpFrameWriter {
@@ -40,6 +41,10 @@ class AmqpFrameWriter {
 
     this.writeByte(buffer.length);
     this.internalSmartBuffer.writeBuffer(buffer);
+  }
+
+  public writeLongLong(value: bigint): void {
+    this.internalSmartBuffer.writeBuffer(toBufferBE(value, 8));
   }
 
   public writeTable(value: object): void {

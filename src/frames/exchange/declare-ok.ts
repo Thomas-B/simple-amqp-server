@@ -3,12 +3,7 @@ import { Frame } from "../frame";
 
 class DeclareOk extends Frame {
   constructor(channelId: number) {
-    super(
-      FrameType.Method,
-      ClassId.Exchange,
-      ExchangeMethodId.DeclareOk,
-      channelId
-    );
+    super(FrameType.Method, ClassId.Exchange, ExchangeMethodId.DeclareOk, channelId);
   }
 
   protected getPayload(): Buffer {

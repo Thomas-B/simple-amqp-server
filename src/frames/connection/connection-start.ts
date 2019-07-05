@@ -17,8 +17,6 @@ class ConnectionStart extends Frame {
   protected getPayload(): Buffer {
     const payload = new AmqpFrameWriter();
 
-    payload.writeShort(this.classId);
-    payload.writeShort(this.methodId);
     payload.writeByte(this.major);
     payload.writeByte(this.minor);
     payload.writeTable(this.serverProperty);
