@@ -1,5 +1,5 @@
-import { EOB } from "../constants";
-import { AmqpFrameWriter } from "./amqp-frame-writer";
+import { EOB } from '../constants'
+import { AmqpFrameWriter } from './amqp-frame-writer'
 
 abstract class Frame {
   constructor(
@@ -9,39 +9,39 @@ abstract class Frame {
     protected channelId?: number
   ) {}
 
-  protected abstract getPayload(): Buffer;
+  protected abstract getPayload(): Buffer
 
   public setChannelId(channelId?: number) {
-    this.channelId = channelId;
+    this.channelId = channelId
   }
 
   protected getCMBuffer(): Buffer {
-    const payload = new AmqpFrameWriter();
-    payload.writeShort(this.classId);
-    payload.writeShort(this.methodId);
-    return payload.toBuffer();
+    const payload = new AmqpFrameWriter()
+    payload.writeShort(this.classId)
+    payload.writeShort(this.methodId)
+    return payload.toBuffer()
   }
 
   public toBuffer(): Buffer {
-    const payload = Buffer.concat([this.getCMBuffer(), this.getPayload()]);
-    const header = this.getHeader(payload.length);
+    const payload = Buffer.concat([this.getCMBuffer(), this.getPayload()])
+    const header = this.getHeader(payload.length)
 
-    return Buffer.concat([header, payload, EOB]);
+    return Buffer.concat([header, payload, EOB])
   }
 
   protected getHeader(size: number): Buffer {
-    const header = new AmqpFrameWriter();
+    const header = new AmqpFrameWriter()
 
     if (this.channelId === undefined) {
-      throw new Error("Missing channel Id");
+      throw new Error('Missing channel Id')
     }
 
-    header.writeByte(this.frameType);
-    header.writeShort(this.channelId);
-    header.writeLong(size);
+    header.writeByte(this.frameType)
+    header.writeShort(this.channelId)
+    header.writeLong(size)
 
-    return header.toBuffer();
+    return header.toBuffer()
   }
 }
 
-export { Frame };
+export { Frame }

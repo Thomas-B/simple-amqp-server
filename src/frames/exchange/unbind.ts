@@ -1,5 +1,5 @@
-import { Bind } from "./bind";
+import { Bind } from './bind'
 
 class UnBind extends Bind {}
 
-export { UnBind };
+export { UnBind }

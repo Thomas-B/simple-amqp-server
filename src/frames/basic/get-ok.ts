@@ -1,6 +1,6 @@
-import { ClassId, FrameType, BasicMethodId } from "../../constants";
-import { Frame } from "../frame";
-import { AmqpFrameWriter } from "../amqp-frame-writer";
+import { ClassId, FrameType, BasicMethodId } from '../../constants'
+import { Frame } from '../frame'
+import { AmqpFrameWriter } from '../amqp-frame-writer'
 
 class GetOk extends Frame {
   constructor(
@@ -11,25 +11,25 @@ class GetOk extends Frame {
     private readonly messageCount: number,
     channelId: number
   ) {
-    super(FrameType.Method, ClassId.Exchange, BasicMethodId.GetOk, channelId);
+    super(FrameType.Method, ClassId.Exchange, BasicMethodId.GetOk, channelId)
   }
 
   protected getPayload(): Buffer {
-    const payload = new AmqpFrameWriter();
-    let bits = 0;
+    const payload = new AmqpFrameWriter()
+    let bits = 0
 
     if (this.redelivered) {
-      bits |= 1;
+      bits |= 1
     }
 
-    payload.writeLongLong(this.deliveryTag);
-    payload.writeByte(bits);
-    payload.writeShortStr(this.exchangeName);
-    payload.writeShortStr(this.routingKey);
-    payload.writeLong(this.messageCount);
+    payload.writeLongLong(this.deliveryTag)
+    payload.writeByte(bits)
+    payload.writeShortStr(this.exchangeName)
+    payload.writeShortStr(this.routingKey)
+    payload.writeLong(this.messageCount)
 
-    return payload.toBuffer();
+    return payload.toBuffer()
   }
 }
 
-export { GetOk };
+export { GetOk }

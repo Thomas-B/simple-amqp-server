@@ -1,19 +1,14 @@
-import { ClassId, FrameType, ExchangeMethodId } from "../../constants";
-import { Frame } from "../frame";
+import { ClassId, FrameType, ExchangeMethodId } from '../../constants'
+import { Frame } from '../frame'
 
 class UnBindOk extends Frame {
   constructor(channelId: number) {
-    super(
-      FrameType.Method,
-      ClassId.Exchange,
-      ExchangeMethodId.UnBindOk,
-      channelId
-    );
+    super(FrameType.Method, ClassId.Exchange, ExchangeMethodId.UnBindOk, channelId)
   }
 
   protected getPayload(): Buffer {
-    return Buffer.from([]);
+    return Buffer.from([])
   }
 }
 
-export { UnBindOk };
+export { UnBindOk }

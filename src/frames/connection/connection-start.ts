@@ -1,6 +1,6 @@
-import { AmqpFrameWriter } from "../amqp-frame-writer";
-import { ClassId, ConnectionMethodId, EOB, FrameType } from "../../constants";
-import { Frame } from "../frame";
+import { AmqpFrameWriter } from '../amqp-frame-writer'
+import { ClassId, ConnectionMethodId, EOB, FrameType } from '../../constants'
+import { Frame } from '../frame'
 
 class ConnectionStart extends Frame {
   constructor(
@@ -11,20 +11,20 @@ class ConnectionStart extends Frame {
     private locales: string
   ) {
     // connection start is only on channel 0
-    super(FrameType.Method, ClassId.Connnection, ConnectionMethodId.Start, 0);
+    super(FrameType.Method, ClassId.Connnection, ConnectionMethodId.Start, 0)
   }
 
   protected getPayload(): Buffer {
-    const payload = new AmqpFrameWriter();
+    const payload = new AmqpFrameWriter()
 
-    payload.writeByte(this.major);
-    payload.writeByte(this.minor);
-    payload.writeTable(this.serverProperty);
-    payload.writeLongStr(this.mechanism);
-    payload.writeLongStr(this.locales);
+    payload.writeByte(this.major)
+    payload.writeByte(this.minor)
+    payload.writeTable(this.serverProperty)
+    payload.writeLongStr(this.mechanism)
+    payload.writeLongStr(this.locales)
 
-    return payload.toBuffer();
+    return payload.toBuffer()
   }
 }
 
-export { ConnectionStart };
+export { ConnectionStart }

@@ -2,19 +2,37 @@
   "name": "simple-amqp",
   "version": "0.0.1",
   "description": "simple amqp server for testing purpose",
-  "main": "index.js",
+  "main": "lib/src/server.js",
+  "types": "lib/src/server.d.ts",
   "scripts": {
     "start": "cross-env DEBUG=sas:* nodemon --exec ts-node -- ./src/main.ts",
-    "test": "npm test"
+    "build": "tsc",
+    "test": "jest --config jestconfig.json",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
   },
   "author": "Thomas-B",
   "license": "MIT",
+  "files": [
+    "lib/**/*"
+  ],
   "devDependencies": {
     "@types/debug": "^4.1.4",
+    "@types/jest": "^24.0.15",
     "@types/node": "^12.0.2",
     "cross-env": "^5.2.0",
+    "jest": "^24.8.0",
     "nodemon": "^1.19.1",
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.0.2",
     "ts-node": "^8.2.0",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.4.5"
   },
   "dependencies": {
@@ -22,5 +40,20 @@
     "buffer-more-ints": "^1.0.0",
     "debug": "^4.1.1",
     "smart-buffer": "^4.0.2"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/Thomas-B/simple-amqp-server/issues"
+  },
+  "homepage": "https://github.com/Thomas-B/simple-amqp-server#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Thomas-B/simple-amqp-server.git"
+  },
+  "keywords": [
+    "amqp",
+    "server",
+    "rabbitmq",
+    "TypeScript",
+    "mock"
+  ]
 }

@@ -1,29 +1,29 @@
-import { AmqpFrameReader } from "../amqp-frame-reader";
+import { AmqpFrameReader } from '../amqp-frame-reader'
 
 class Bind {
-  public readonly reserved1: number;
-  public readonly destination: string;
-  public readonly source: string;
-  public readonly routingKey: string;
-  public readonly noWait: boolean;
-  public readonly arguments: object;
+  public readonly reserved1: number
+  public readonly destination: string
+  public readonly source: string
+  public readonly routingKey: string
+  public readonly noWait: boolean
+  public readonly arguments: object
 
   constructor(data: Buffer) {
-    const amqpReader = new AmqpFrameReader(data);
+    const amqpReader = new AmqpFrameReader(data)
 
     // re-read class and method ids
-    amqpReader.readShort();
-    amqpReader.readShort();
+    amqpReader.readShort()
+    amqpReader.readShort()
 
-    this.reserved1 = amqpReader.readShort();
-    this.destination = amqpReader.readShortstr();
-    this.source = amqpReader.readShortstr();
-    this.routingKey = amqpReader.readShortstr();
-    const bits = amqpReader.readByte();
-    this.arguments = amqpReader.readTable();
+    this.reserved1 = amqpReader.readShort()
+    this.destination = amqpReader.readShortstr()
+    this.source = amqpReader.readShortstr()
+    this.routingKey = amqpReader.readShortstr()
+    const bits = amqpReader.readByte()
+    this.arguments = amqpReader.readTable()
 
-    this.noWait = (bits & 1) === 1;
+    this.noWait = (bits & 1) === 1
   }
 }
 
-export { Bind };
+export { Bind }

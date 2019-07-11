@@ -1,19 +1,19 @@
-import { AmqpFrameReader } from "../amqp-frame-reader";
+import { AmqpFrameReader } from '../amqp-frame-reader'
 
 class RecoveraAsync {
-  public readonly requeue: boolean;
+  public readonly requeue: boolean
 
   constructor(data: Buffer) {
-    const amqpReader = new AmqpFrameReader(data);
+    const amqpReader = new AmqpFrameReader(data)
 
     // re-read class and method ids
-    amqpReader.readShort();
-    amqpReader.readShort();
+    amqpReader.readShort()
+    amqpReader.readShort()
 
-    const bits = amqpReader.readByte();
+    const bits = amqpReader.readByte()
 
-    this.requeue = (bits & 1) === 1;
+    this.requeue = (bits & 1) === 1
   }
 }
 
-export { RecoveraAsync };
+export { RecoveraAsync }

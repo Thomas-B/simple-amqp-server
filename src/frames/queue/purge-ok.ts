@@ -1,14 +1,14 @@
-import { ClassId, FrameType, QueueMethodId } from "../../constants";
-import { Frame } from "../frame";
+import { ClassId, FrameType, QueueMethodId } from '../../constants'
+import { Frame } from '../frame'
 
 class PurgeOk extends Frame {
   constructor(channelId: number) {
-    super(FrameType.Method, ClassId.Exchange, QueueMethodId.PurgeOk, channelId);
+    super(FrameType.Method, ClassId.Exchange, QueueMethodId.PurgeOk, channelId)
   }
 
   protected getPayload(): Buffer {
-    return Buffer.from([]);
+    return Buffer.from([])
   }
 }
 
-export { PurgeOk };
+export { PurgeOk }

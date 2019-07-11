@@ -1,23 +1,23 @@
-import { AmqpFrameReader } from "../amqp-frame-reader";
-import { AmqpFrameWriter } from "../amqp-frame-writer";
-import { Frame } from "../frame";
-import { FrameType, ClassId, BasicMethodId } from "../../constants";
+import { AmqpFrameReader } from '../amqp-frame-reader'
+import { AmqpFrameWriter } from '../amqp-frame-writer'
+import { Frame } from '../frame'
+import { FrameType, ClassId, BasicMethodId } from '../../constants'
 
 class AckReader {
-  public readonly deliveryTag: bigint;
-  public readonly multiple: boolean;
+  public readonly deliveryTag: bigint
+  public readonly multiple: boolean
 
   constructor(data: Buffer) {
-    const amqpReader = new AmqpFrameReader(data);
+    const amqpReader = new AmqpFrameReader(data)
 
     // re-read class and method ids
-    amqpReader.readShort();
-    amqpReader.readShort();
+    amqpReader.readShort()
+    amqpReader.readShort()
 
-    this.deliveryTag = amqpReader.readLongLong();
-    const bits = amqpReader.readByte();
+    this.deliveryTag = amqpReader.readLongLong()
+    const bits = amqpReader.readByte()
 
-    this.multiple = (bits & 1) === 1;
+    this.multiple = (bits & 1) === 1
   }
 }
 
@@ -27,21 +27,21 @@ class AckWriter extends Frame {
     private readonly multiple: boolean,
     channelId: number
   ) {
-    super(FrameType.Method, ClassId.Basic, BasicMethodId.Ack, channelId);
+    super(FrameType.Method, ClassId.Basic, BasicMethodId.Ack, channelId)
   }
 
   protected getPayload(): Buffer {
-    const payload = new AmqpFrameWriter();
+    const payload = new AmqpFrameWriter()
 
-    payload.writeLongLong(this.deliveryTag);
-    let bits = 0;
+    payload.writeLongLong(this.deliveryTag)
+    let bits = 0
     if (this.multiple) {
-      bits |= 1;
+      bits |= 1
     }
-    payload.writeByte(bits);
+    payload.writeByte(bits)
 
-    return payload.toBuffer();
+    return payload.toBuffer()
   }
 }
 
-export { AckReader, AckWriter };
+export { AckReader, AckWriter }

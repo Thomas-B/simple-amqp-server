@@ -48,7 +48,7 @@ enum ExchangeMethodId {
   // rmq specific method
   UnBind = 40,
   // This looks like a type in dispatchd and
-  //I can't find any documentation to this rmq specific method
+  // I can't find any documentation to this rmq specific method
   UnBindOk = 51
 }
 
@@ -87,7 +87,7 @@ enum BasicMethodId {
 }
 
 // End Of Buffer
-const EOB = Buffer.from([206]);
+const EOB = Buffer.from([206])
 
 export {
   FrameType,
@@ -98,4 +98,4 @@ export {
   ExchangeMethodId,
   QueueMethodId,
   BasicMethodId
-};
+}

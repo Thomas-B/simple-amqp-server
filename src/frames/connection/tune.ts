@@ -1,6 +1,6 @@
-import { AmqpFrameWriter } from "../amqp-frame-writer";
-import { ClassId, ConnectionMethodId, FrameType } from "../../constants";
-import { Frame } from "../frame";
+import { AmqpFrameWriter } from '../amqp-frame-writer'
+import { ClassId, ConnectionMethodId, FrameType } from '../../constants'
+import { Frame } from '../frame'
 
 class Tune extends Frame {
   constructor(
@@ -9,18 +9,18 @@ class Tune extends Frame {
     private readonly hearBeartInterval: number,
     channelId: number
   ) {
-    super(FrameType.Method, ClassId.Connnection, ConnectionMethodId.Tune, channelId);
+    super(FrameType.Method, ClassId.Connnection, ConnectionMethodId.Tune, channelId)
   }
 
   protected getPayload(): Buffer {
-    const payload = new AmqpFrameWriter();
+    const payload = new AmqpFrameWriter()
 
-    payload.writeShort(this.maxChannels);
-    payload.writeLong(this.maxFrameSize);
-    payload.writeShort(this.hearBeartInterval);
+    payload.writeShort(this.maxChannels)
+    payload.writeLong(this.maxFrameSize)
+    payload.writeShort(this.hearBeartInterval)
 
-    return payload.toBuffer();
+    return payload.toBuffer()
   }
 }
 
-export { Tune };
+export { Tune }
