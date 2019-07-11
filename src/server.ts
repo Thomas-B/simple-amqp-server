@@ -1,15 +1,29 @@
 import { Connection } from './connection'
 import { Server as TCPServer, createServer, Socket } from 'net'
 import { debug as d } from 'debug'
+import { onPublishCallback } from './onPublish'
 
 const debug = d('sas:main')
 
+interface IServerOptions {
+  port?: number
+  onPublish?: onPublishCallback
+}
 class Server {
   private readonly connections: Map<Socket, Connection>
   private readonly server: TCPServer
   private readonly port: number = 5672
+  private readonly options: IServerOptions = {}
 
-  constructor() {
+  constructor(options?: IServerOptions) {
+    if (options) {
+      this.options = options
+    }
+
+    if (this.options.port !== undefined) {
+      this.port = this.options.port
+    }
+
     this.connections = new Map<Socket, Connection>()
     this.server = createServer(this.onNewConnection.bind(this))
   }
@@ -28,7 +42,7 @@ class Server {
 
     this.connections.set(socket, newConnection)
     newConnection.on('close', this.onConnectionClose.bind(this))
-    newConnection.start()
+    newConnection.start(this.options.onPublish)
   }
 
   private onConnectionClose(socket: Socket) {
@@ -47,4 +61,4 @@ class Server {
   }
 }
 
-export { Server }
+export { Server, IServerOptions }

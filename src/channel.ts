@@ -19,14 +19,20 @@ import { Publish } from './frames/basic/publish'
 import { Message } from './message'
 import { ContentHeader } from './frames/content-header'
 import { debug as d } from 'debug'
+import { onPublishCallback } from './onPublish'
 
 const debug = d('sas:channel')
 
 class Channel {
   private currentMessage?: Message
-  constructor(private readonly id: number, private readonly connection: Connection) {}
+  constructor(
+    private readonly id: number,
+    private readonly connection: Connection,
+    private readonly onPublish?: onPublishCallback
+  ) {}
 
   public handleWireFrame(wireFrame: WireFrame): void {
+    debug(wireFrame)
     switch (wireFrame.frameType) {
       case FrameType.Method:
         this.handleMethod(wireFrame.payload)
@@ -78,6 +84,9 @@ class Channel {
 
     debug('Done receiving body')
     debug(this.currentMessage.payload.toString())
+    if (this.onPublish) {
+      this.onPublish(this.currentMessage)
+    }
     this.currentMessage = undefined
   }
 

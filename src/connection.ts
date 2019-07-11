@@ -6,6 +6,7 @@ import { FrameType } from './constants'
 import { HeartBeat } from './frames/heart-beat'
 import { EventEmitter } from 'events'
 import { debug as d } from 'debug'
+import { onPublishCallback } from './onPublish'
 
 const debug = d('sas:connection')
 
@@ -60,6 +61,7 @@ class Connection extends EventEmitter {
     let dataOffset = 0
     // one packet can contain multiple frames
     while (dataOffset !== data.length) {
+      debug(JSON.stringify(Array.from(data)))
       const frame = data.slice(dataOffset)
       const wireFrame = new WireFrame(frame)
       dataOffset += wireFrame.length
@@ -97,8 +99,8 @@ class Connection extends EventEmitter {
     this.socket.write(data)
   }
 
-  public start(): void {
-    const connectionChannel = new Channel(this.getNewChannelId(), this)
+  public start(onPublish?: onPublishCallback): void {
+    const connectionChannel = new Channel(this.getNewChannelId(), this, onPublish)
 
     this.channels.push(connectionChannel)
     this.socket.on('data', this.handleConnection.bind(this))
