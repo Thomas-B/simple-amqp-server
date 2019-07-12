@@ -51,6 +51,10 @@ class Server {
 
   public async stop(): Promise<void> {
     return new Promise((resolve, reject) => {
+      this.connections.forEach((value: Connection, key: Socket) => {
+        key.destroy()
+      })
+
       this.server.close((err?: Error) => {
         if (err) {
           return reject(err)
