@@ -38,11 +38,11 @@ class Server {
   }
 
   private onNewConnection(socket: Socket) {
-    const newConnection = new Connection(socket)
+    const newConnection = new Connection(socket, this.options.onPublish)
 
     this.connections.set(socket, newConnection)
     newConnection.on('close', this.onConnectionClose.bind(this))
-    newConnection.start(this.options.onPublish)
+    newConnection.start()
   }
 
   private onConnectionClose(socket: Socket) {

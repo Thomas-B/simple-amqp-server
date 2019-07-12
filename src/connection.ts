@@ -15,7 +15,7 @@ class Connection extends EventEmitter {
   private currentChannelId: number
   private heartBeatTimeout?: NodeJS.Timeout
 
-  constructor(private socket: Socket) {
+  constructor(private socket: Socket, private readonly onPublish?: onPublishCallback) {
     super()
     debug('new connection')
     this.channels = []
@@ -75,7 +75,7 @@ class Connection extends EventEmitter {
 
       if (!channel) {
         debug('new Channel')
-        channel = new Channel(this.getNewChannelId(), this)
+        channel = new Channel(this.getNewChannelId(), this, this.onPublish)
         this.channels.push(channel)
       }
       // debug("length wireframe vs data", wireFrame.payload.length + 1 + 3, data.length);
@@ -99,8 +99,8 @@ class Connection extends EventEmitter {
     this.socket.write(data)
   }
 
-  public start(onPublish?: onPublishCallback): void {
-    const connectionChannel = new Channel(this.getNewChannelId(), this, onPublish)
+  public start(): void {
+    const connectionChannel = new Channel(this.getNewChannelId(), this)
 
     this.channels.push(connectionChannel)
     this.socket.on('data', this.handleConnection.bind(this))
