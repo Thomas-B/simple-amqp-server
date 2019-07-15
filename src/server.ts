@@ -1,5 +1,5 @@
 import { Connection } from './connection'
-import { Server as TCPServer, createServer, Socket } from 'net'
+import { Server as TCPServer, createServer, Socket, AddressInfo } from 'net'
 import { debug as d } from 'debug'
 import { onPublishCallback } from './onPublish'
 
@@ -13,7 +13,7 @@ class Server {
   private readonly connections: Map<Socket, Connection>
   private readonly server: TCPServer
   // tslint:disable-next-line:variable-name
-  private readonly _port: number = 5672
+  private _port: number = 5672
   private readonly options: IServerOptions = {}
   get port(): number {
     return this._port
@@ -35,6 +35,12 @@ class Server {
   public async start(): Promise<void> {
     return new Promise((resolve, _) => {
       this.server.listen(this._port, '127.0.0.1', () => {
+        const address = this.server.address()
+
+        if (address && typeof address !== 'string') {
+          this._port = address.port
+        }
+
         resolve()
         debug(`Server started on ${this._port}.`)
       })
