@@ -12,8 +12,12 @@ interface IServerOptions {
 class Server {
   private readonly connections: Map<Socket, Connection>
   private readonly server: TCPServer
-  private readonly port: number = 5672
+  // tslint:disable-next-line:variable-name
+  private readonly _port: number = 5672
   private readonly options: IServerOptions = {}
+  get port(): number {
+    return this._port
+  }
 
   constructor(options?: IServerOptions) {
     if (options) {
@@ -21,7 +25,7 @@ class Server {
     }
 
     if (this.options.port !== undefined) {
-      this.port = this.options.port
+      this._port = this.options.port
     }
 
     this.connections = new Map<Socket, Connection>()
@@ -30,9 +34,9 @@ class Server {
 
   public async start(): Promise<void> {
     return new Promise((resolve, _) => {
-      this.server.listen(this.port, '127.0.0.1', () => {
+      this.server.listen(this._port, '127.0.0.1', () => {
         resolve()
-        debug(`Server started on ${this.port}.`)
+        debug(`Server started on ${this._port}.`)
       })
     })
   }
