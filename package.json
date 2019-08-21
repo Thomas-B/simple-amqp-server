@@ -1,6 +1,6 @@
 {
   "name": "simple-amqp-server",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "simple amqp server for testing purpose",
   "main": "lib/src/server.js",
   "types": "lib/src/server.d.ts",
