@@ -3,7 +3,7 @@ import { Frame } from '../frame'
 
 class BindOk extends Frame {
   constructor(channelId: number) {
-    super(FrameType.Method, ClassId.Exchange, ExchangeMethodId.BindOk, channelId)
+    super(FrameType.Method, ClassId.Queue, ExchangeMethodId.BindOk, channelId)
   }
 
   protected getPayload(): Buffer {

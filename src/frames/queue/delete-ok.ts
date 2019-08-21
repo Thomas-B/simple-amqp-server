@@ -3,7 +3,7 @@ import { Frame } from '../frame'
 
 class DeleteOk extends Frame {
   constructor(channelId: number) {
-    super(FrameType.Method, ClassId.Exchange, ExchangeMethodId.DeleteOk, channelId)
+    super(FrameType.Method, ClassId.Queue, ExchangeMethodId.DeleteOk, channelId)
   }
 
   protected getPayload(): Buffer {
