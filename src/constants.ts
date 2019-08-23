@@ -11,6 +11,7 @@ enum ClassId {
   Exchange = 40,
   Queue = 50,
   Basic = 60,
+  Confirm = 85,
   TX = 90
 }
 
@@ -86,6 +87,10 @@ enum BasicMethodId {
   Nack = 120
 }
 
+enum ConfirmMethodId {
+  Select = 10,
+  SelectOk = 11
+}
 // End Of Buffer
 const EOB = Buffer.from([206])
 
@@ -97,5 +102,6 @@ export {
   ChannelMethodId,
   ExchangeMethodId,
   QueueMethodId,
-  BasicMethodId
+  BasicMethodId,
+  ConfirmMethodId
 }

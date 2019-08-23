@@ -6,7 +6,8 @@ import {
   ChannelMethodId,
   ExchangeMethodId,
   QueueMethodId,
-  BasicMethodId
+  BasicMethodId,
+  ConfirmMethodId
 } from './constants'
 import { Connection } from './connection'
 import { AmqpFrameReader } from './frames/amqp-frame-reader'
@@ -20,6 +21,7 @@ import { Message } from './message'
 import { ContentHeader } from './frames/content-header'
 import { debug as d } from 'debug'
 import { onPublishCallback } from './onPublish'
+import { ConfirmMethods } from './confirm-method'
 
 const debug = d('sas:channel')
 
@@ -109,10 +111,23 @@ class Channel {
       case ClassId.Basic:
         this.handleBasic(methodId, payload)
         break
+      case ClassId.Confirm:
+        this.handleConfirm(methodId, payload)
+        break
       case ClassId.TX:
         throw new Error('Tx methods not implemented')
       default:
         throw new Error(`Can't handle the Class id = ${classId}`)
+    }
+  }
+
+  private handleConfirm(methodId: number, payload: Buffer) {
+    switch (methodId) {
+      case ConfirmMethodId.Select:
+        ConfirmMethods.Select(payload, this.connection, this.id)
+        break
+      default:
+        throw new Error(`Can't handle Confirm method id = ${methodId}`)
     }
   }
 
