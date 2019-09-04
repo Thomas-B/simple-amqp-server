@@ -7,6 +7,7 @@ import { HeartBeat } from './frames/heart-beat'
 import { EventEmitter } from 'events'
 import { debug as d } from 'debug'
 import { onPublishCallback } from './onPublish'
+import { Server } from './server'
 
 const debug = d('sas:connection')
 
@@ -15,7 +16,11 @@ class Connection extends EventEmitter {
   private currentChannelId: number
   private heartBeatTimeout?: NodeJS.Timeout
 
-  constructor(private socket: Socket, private readonly onPublish?: onPublishCallback) {
+  constructor(
+    private socket: Socket,
+    private readonly server: Server,
+    private readonly onPublish?: onPublishCallback
+  ) {
     super()
     debug('new connection')
     this.channels = []
@@ -75,7 +80,7 @@ class Connection extends EventEmitter {
 
       if (!channel) {
         debug('new Channel')
-        channel = new Channel(this.getNewChannelId(), this, this.onPublish)
+        channel = new Channel(this.getNewChannelId(), this, this.server, this.onPublish)
         this.channels.push(channel)
       }
       // debug("length wireframe vs data", wireFrame.payload.length + 1 + 3, data.length);
@@ -100,7 +105,8 @@ class Connection extends EventEmitter {
   }
 
   public start(): void {
-    const connectionChannel = new Channel(this.getNewChannelId(), this)
+    // first channel should not be used for anything other than connection
+    const connectionChannel = new Channel(this.getNewChannelId(), this, this.server)
 
     this.channels.push(connectionChannel)
     this.socket.on('data', this.handleConnection.bind(this))

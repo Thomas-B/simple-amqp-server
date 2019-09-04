@@ -22,6 +22,7 @@ import { ContentHeader } from './frames/content-header'
 import { debug as d } from 'debug'
 import { onPublishCallback } from './onPublish'
 import { ConfirmMethods } from './confirm-method'
+import { Server } from './server'
 
 const debug = d('sas:channel')
 
@@ -30,6 +31,7 @@ class Channel {
   constructor(
     private readonly id: number,
     private readonly connection: Connection,
+    private readonly server: Server,
     private readonly onPublish?: onPublishCallback
   ) {}
 
@@ -86,6 +88,7 @@ class Channel {
 
     debug('Done receiving body')
     debug(this.currentMessage.payload.toString())
+
     if (this.onPublish) {
       this.onPublish(this.currentMessage)
     }
@@ -168,19 +171,19 @@ class Channel {
   private handleQueue(methodId: number, payload: Buffer): void {
     switch (methodId) {
       case QueueMethodId.Declare:
-        QueueMethods.Declare(payload, this.connection, this.id)
+        QueueMethods.Declare(payload, this.connection, this.id, this.server)
         break
       case QueueMethodId.Delete:
-        QueueMethods.Delete(payload, this.connection, this.id)
+        QueueMethods.Delete(payload, this.connection, this.id, this.server)
         break
       case QueueMethodId.Bind:
-        QueueMethods.Bind(payload, this.connection, this.id)
+        QueueMethods.Bind(payload, this.connection, this.id, this.server)
         break
       case QueueMethodId.UnBind:
-        QueueMethods.UnBind(payload, this.connection, this.id)
+        QueueMethods.UnBind(payload, this.connection, this.id, this.server)
         break
       case QueueMethodId.Purge:
-        QueueMethods.Purge(payload, this.connection, this.id)
+        QueueMethods.Purge(payload, this.connection, this.id, this.server)
         break
       default:
         throw new Error(`Can't handle Channel method id = ${methodId}`)
@@ -190,16 +193,16 @@ class Channel {
   private handleExchange(methodId: number, payload: Buffer): void {
     switch (methodId) {
       case ExchangeMethodId.Declare:
-        ExchangeMethods.Declare(payload, this.connection, this.id)
+        ExchangeMethods.Declare(payload, this.connection, this.id, this.server)
         break
       case ExchangeMethodId.Delete:
-        ExchangeMethods.Delete(payload, this.connection, this.id)
+        ExchangeMethods.Delete(payload, this.connection, this.id, this.server)
         break
       case ExchangeMethodId.Bind:
-        ExchangeMethods.Bind(payload, this.connection, this.id)
+        ExchangeMethods.Bind(payload, this.connection, this.id, this.server)
         break
       case ExchangeMethodId.UnBind:
-        ExchangeMethods.UnBind(payload, this.connection, this.id)
+        ExchangeMethods.UnBind(payload, this.connection, this.id, this.server)
         break
       default:
         throw new Error(`Can't handle Channel method id = ${methodId}`)

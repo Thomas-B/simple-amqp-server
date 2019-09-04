@@ -1,7 +1,11 @@
 import { Connection } from './connection'
-import { Server as TCPServer, createServer, Socket, AddressInfo } from 'net'
+import { Server as TCPServer, createServer, Socket } from 'net'
 import { debug as d } from 'debug'
 import { onPublishCallback } from './onPublish'
+import { Exchange } from './exchange'
+import { Declare as DeclareExchange } from './frames/exchange/declare'
+import { Declare as DeclareQueue } from './frames/queue/declare'
+import { Queue } from './queue'
 
 const debug = d('sas:main')
 
@@ -9,8 +13,11 @@ interface IServerOptions {
   port?: number
   onPublish?: onPublishCallback
 }
+
 class Server {
   private readonly connections: Map<Socket, Connection>
+  private readonly exchanges: Map<string, Exchange>
+  private readonly queues: Map<string, Queue>
   private readonly server: TCPServer
   // tslint:disable-next-line:variable-name
   private _port: number = 5672
@@ -29,6 +36,8 @@ class Server {
     }
 
     this.connections = new Map<Socket, Connection>()
+    this.exchanges = new Map<string, Exchange>()
+    this.queues = new Map<string, Queue>()
     this.server = createServer(this.onNewConnection.bind(this))
   }
 
@@ -47,8 +56,16 @@ class Server {
     })
   }
 
+  public addExchange(declareFrame: DeclareExchange) {
+    this.exchanges.set(declareFrame.exchange, new Exchange(declareFrame))
+  }
+
+  public addQueue(declareFrame: DeclareQueue) {
+    this.queues.set(declareFrame.queue, new Queue(declareFrame))
+  }
+
   private onNewConnection(socket: Socket) {
-    const newConnection = new Connection(socket, this.options.onPublish)
+    const newConnection = new Connection(socket, this, this.options.onPublish)
 
     this.connections.set(socket, newConnection)
     newConnection.on('close', this.onConnectionClose.bind(this))

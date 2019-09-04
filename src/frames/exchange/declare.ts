@@ -3,7 +3,7 @@ import { AmqpFrameReader } from '../amqp-frame-reader'
 class Declare {
   public readonly reserved1: number
   public readonly exchange: string
-  public readonly type: string
+  public readonly type: 'direct' | 'fanout' | 'topic'
   public readonly passive: boolean
   public readonly durable: boolean
   public readonly exclusive: boolean
@@ -20,7 +20,12 @@ class Declare {
 
     this.reserved1 = amqpReader.readShort()
     this.exchange = amqpReader.readShortstr()
-    this.type = amqpReader.readShortstr()
+    const type = amqpReader.readShortstr()
+    if (type === 'direct' || type === 'fanout' || type === 'topic') {
+      this.type = type
+    } else {
+      throw new Error('received bad exchange type')
+    }
     const bits = amqpReader.readByte()
     this.arguments = amqpReader.readTable()
 
