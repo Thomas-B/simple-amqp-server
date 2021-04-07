@@ -10,11 +10,10 @@ class Binding {
     this.exchange = bindFrame.exchange
     this.queue = bindFrame.queue
 
-    if (exchangeType === ExchangeType.Topic) {
-      this.topicRegex = this.generateTopicRegex(bindFrame.routingKey)
-    } else {
-      this.topicRegex = new RegExp('.*')
-    }
+    this.topicRegex =
+      exchangeType === ExchangeType.Topic
+        ? this.generateTopicRegex(bindFrame.routingKey)
+        : (this.topicRegex = new RegExp('.*'))
   }
 
   private generateTopicRegex(routingKey: string): RegExp {
