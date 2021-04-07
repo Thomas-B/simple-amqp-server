@@ -3,12 +3,14 @@ import { Connection } from '../connection'
 import { Socket } from 'net'
 import { Message } from '../message'
 import { WireFrame } from '../frames/wire-frame'
+import { Server } from '../server'
 
 describe('channel', () => {
   it('should call the onPublish callback', done => {
     const socket = ({} as any) as Socket
-    const co = new Connection(socket)
-    const channel = new Channel(1, co, (message: Message) => {
+    const server = new Server()
+    const co = new Connection(socket, server)
+    const channel = new Channel(1, co, server, (message: Message) => {
       done()
     })
 
